@@ -1,0 +1,919 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Istidama Admin Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #66a552;
+            --secondary: #ffd700;
+            --background: #004632;
+            --light-text: #ffffff;
+            --sidebar: #0c3d28;
+            --sidebar-hover: #1a5238;
+            --content-bg: #f5f7fa;
+            --card-bg: #ffffff;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        body {
+            display: flex;
+            min-height: 100vh;
+            background-color: var(--content-bg);
+        }
+        
+        /* Sidebar Styles */
+        .sidebar {
+            width: 250px;
+            background: var(--sidebar);
+            color: var(--light-text);
+            transition: all 0.3s ease;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+        }
+        
+        .sidebar-header {
+            padding: 1.5rem;
+            background: rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        
+        .sidebar-header img {
+            height: 50px;
+            margin-bottom: 0.5rem;
+        }
+        
+        .sidebar-header h3 {
+            font-size: 1.1rem;
+            color: var(--secondary);
+        }
+        
+        .sidebar-menu {
+            padding: 1rem 0;
+        }
+        
+        .sidebar-menu h4 {
+            padding: 0.8rem 1.5rem;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.5);
+            letter-spacing: 1px;
+        }
+        
+        .sidebar-menu ul {
+            list-style: none;
+        }
+        
+        .sidebar-menu li a {
+            display: flex;
+            align-items: center;
+            padding: 0.8rem 1.5rem;
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        
+        .sidebar-menu li a:hover,
+        .sidebar-menu li a.active {
+            background: var(--sidebar-hover);
+            color: var(--light-text);
+        }
+        
+        .sidebar-menu li a i {
+            margin-right: 0.8rem;
+            font-size: 1.1rem;
+            width: 20px;
+            text-align: center;
+        }
+        
+        /* Main Content Styles */
+        .main-content {
+            flex: 1;
+            margin-left: 250px;
+            transition: all 0.3s ease;
+        }
+        
+        /* Top Navigation */
+        .top-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 1.5rem;
+            background: var(--card-bg);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+        
+        .top-nav h2 {
+            color: var(--sidebar);
+            font-size: 1.5rem;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+        }
+        
+        .user-info img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 0.8rem;
+        }
+        
+        .user-info .user-name {
+            font-weight: 500;
+            margin-right: 1rem;
+        }
+        
+        .logout-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .logout-btn:hover {
+            background: #5a9548;
+        }
+        
+        /* Dashboard Content */
+        .content {
+            padding: 1.5rem;
+        }
+        
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .card {
+            background: var(--card-bg);
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+        
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .card-header h3 {
+            font-size: 1rem;
+            color: #555;
+        }
+        
+        .card-header i {
+            font-size: 1.5rem;
+            color: var(--primary);
+        }
+        
+        .card-body h2 {
+            font-size: 2rem;
+            color: var(--sidebar);
+            margin-bottom: 0.5rem;
+        }
+        
+        .card-footer {
+            margin-top: 1rem;
+            font-size: 0.8rem;
+            color: #777;
+        }
+        
+        /* Tables */
+        .table-container {
+            background: var(--card-bg);
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            margin-bottom: 2rem;
+        }
+        
+        .table-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .table-header h3 {
+            color: var(--sidebar);
+        }
+        
+        .add-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+        }
+        
+        .add-btn:hover {
+            background: #5a9548;
+        }
+        
+        .add-btn i {
+            margin-right: 0.5rem;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        table th, table td {
+            padding: 0.8rem;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+        
+        table th {
+            background: rgba(102, 165, 82, 0.1);
+            color: var(--sidebar);
+            font-weight: 500;
+        }
+        
+        table tr:hover {
+            background: rgba(102, 165, 82, 0.05);
+        }
+        
+        .status {
+            display: inline-block;
+            padding: 0.3rem 0.6rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+        
+        .status.ongoing {
+            background: rgba(255, 193, 7, 0.2);
+            color: #ffc107;
+        }
+        
+        .status.completed {
+            background: rgba(40, 167, 69, 0.2);
+            color: #28a745;
+        }
+        
+        .status.upcoming {
+            background: rgba(23, 162, 184, 0.2);
+            color: #17a2b8;
+        }
+        
+        .action-btn {
+            padding: 0.3rem 0.6rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-right: 0.3rem;
+        }
+        
+        .edit-btn {
+            background: rgba(23, 162, 184, 0.1);
+            color: #17a2b8;
+        }
+        
+        .edit-btn:hover {
+            background: rgba(23, 162, 184, 0.2);
+        }
+        
+        .delete-btn {
+            background: rgba(220, 53, 69, 0.1);
+            color: #dc3545;
+        }
+        
+        .delete-btn:hover {
+            background: rgba(220, 53, 69, 0.2);
+        }
+        
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 5px 30px rgba(0, 0, 0, 0.3);
+            animation: modalFadeIn 0.3s ease;
+        }
+        
+        @keyframes modalFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .modal-header {
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .modal-header h3 {
+            color: var(--sidebar);
+        }
+        
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #777;
+        }
+        
+        .modal-body {
+            padding: 1.5rem;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #555;
+            font-weight: 500;
+        }
+        
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+        
+        .form-group textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+        
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(102, 165, 82, 0.2);
+        }
+        
+        .file-upload {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 2rem;
+            border: 2px dashed #ddd;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .file-upload:hover {
+            border-color: var(--primary);
+            background: rgba(102, 165, 82, 0.05);
+        }
+        
+        .file-upload i {
+            font-size: 2rem;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+        
+        .file-upload p {
+            color: #777;
+            text-align: center;
+        }
+        
+        .file-upload input {
+            display: none;
+        }
+        
+        .modal-footer {
+            padding: 1rem 1.5rem;
+            border-top: 1px solid #eee;
+            display: flex;
+            justify-content: flex-end;
+        }
+        
+        .save-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .save-btn:hover {
+            background: #5a9548;
+        }
+        
+        /* Responsive Styles */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 70px;
+                overflow: hidden;
+            }
+            
+            .sidebar-header h3,
+            .sidebar-menu h4,
+            .sidebar-menu li a span {
+                display: none;
+            }
+            
+            .sidebar-menu li a {
+                justify-content: center;
+                padding: 1rem;
+            }
+            
+            .sidebar-menu li a i {
+                margin-right: 0;
+                font-size: 1.3rem;
+            }
+            
+            .main-content {
+                margin-left: 70px;
+            }
+            
+            .user-name {
+                display: none;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .cards {
+                grid-template-columns: 1fr;
+            }
+            
+            .table-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .table-header h3 {
+                margin-bottom: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <img src="static\uploads\sdg.png" alt="Istidama Logo">
+            <h3>Admin Dashboard</h3>
+        </div>
+        
+        <div class="sidebar-menu">
+            <h4>Main</h4>
+            <ul>
+                <li><a href="#" class="active"><i class="fas fa-tachometer-alt"></i> <span>Dashboard</span></a></li>
+            </ul>
+            
+            <h4>Management</h4>
+            <ul>
+                <li><a href="#projects"><i class="fas fa-building"></i> <span>Projects</span></a></li>
+                <li><a href="#services"><i class="fas fa-tools"></i> <span>Services</span></a></li>
+                <li><a href="#testimonials"><i class="fas fa-quote-left"></i> <span>Testimonials</span></a></li>
+                <li><a href="#gallery"><i class="fas fa-images"></i> <span>Gallery</span></a></li>
+            </ul>
+            
+            <h4>Settings</h4>
+            <ul>
+                <li><a href="#settings"><i class="fas fa-cog"></i> <span>Settings</span></a></li>
+                <li><a href="#users"><i class="fas fa-users"></i> <span>Users</span></a></li>
+            </ul>
+        </div>
+    </div>
+    
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Top Navigation -->
+        <div class="top-nav">
+            <h2>Dashboard</h2>
+            <div class="user-info">
+                <img src="https://randomuser.me/api/portraits/men/41.jpg" alt="Admin User">
+                <span class="user-name">Admin User</span>
+                <button class="logout-btn" id="logoutBtn">Logout</button>
+            </div>
+        </div>
+        
+        <!-- Dashboard Content -->
+        <div class="content">
+            <!-- Stats Cards -->
+            <div class="cards">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Total Projects</h3>
+                        <i class="fas fa-building"></i>
+                    </div>
+                    <div class="card-body">
+                        <h2>24</h2>
+                        <p>Across all categories</p>
+                    </div>
+                    <div class="card-footer">
+                        <i class="fas fa-sync-alt"></i> Updated just now
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Ongoing Projects</h3>
+                        <i class="fas fa-hard-hat"></i>
+                    </div>
+                    <div class="card-body">
+                        <h2>12</h2>
+                        <p>Currently in progress</p>
+                    </div>
+                    <div class="card-footer">
+                        <i class="fas fa-sync-alt"></i> Updated just now
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Services Offered</h3>
+                        <i class="fas fa-tools"></i>
+                    </div>
+                    <div class="card-body">
+                        <h2>8</h2>
+                        <p>Different services</p>
+                    </div>
+                    <div class="card-footer">
+                        <i class="fas fa-sync-alt"></i> Updated just now
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Website Visitors</h3>
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="card-body">
+                        <h2>1,245</h2>
+                        <p>This month</p>
+                    </div>
+                    <div class="card-footer">
+                        <i class="fas fa-sync-alt"></i> Updated 5 mins ago
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Projects Table -->
+            <div class="table-container" id="projects">
+                <div class="table-header">
+                    <h3>Ongoing Projects</h3>
+                    <button class="add-btn" id="addProjectBtn"><i class="fas fa-plus"></i> Add Project</button>
+                </div>
+                
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Project Name</th>
+                            <th>Location</th>
+                            <th>Category</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Al Faisal Tower</td>
+                            <td>Riyadh</td>
+                            <td>Commercial</td>
+                            <td><span class="status ongoing">Ongoing</span></td>
+                            <td>
+                                <button class="action-btn edit-btn"><i class="fas fa-edit"></i></button>
+                                <button class="action-btn delete-btn"><i class="fas fa-trash"></i></button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Oasis Residences</td>
+                            <td>Jeddah</td>
+                            <td>Residential</td>
+                            <td><span class="status ongoing">Ongoing</span></td>
+                            <td>
+                                <button class="action-btn edit-btn"><i class="fas fa-edit"></i></button>
+                                <button class="action-btn delete-btn"><i class="fas fa-trash"></i></button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>King Abdullah Hospital</td>
+                            <td>Dammam</td>
+                            <td>Healthcare</td>
+                            <td><span class="status ongoing">Ongoing</span></td>
+                            <td>
+                                <button class="action-btn edit-btn"><i class="fas fa-edit"></i></button>
+                                <button class="action-btn delete-btn"><i class="fas fa-trash"></i></button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Innovation Center</td>
+                            <td>Khobar</td>
+                            <td>Education</td>
+                            <td><span class="status ongoing">Ongoing</span></td>
+                            <td>
+                                <button class="action-btn edit-btn"><i class="fas fa-edit"></i></button>
+                                <button class="action-btn delete-btn"><i class="fas fa-trash"></i></button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- Services Table -->
+            <div class="table-container" id="services">
+                <div class="table-header">
+                    <h3>Services</h3>
+                    <button class="add-btn" id="addServiceBtn"><i class="fas fa-plus"></i> Add Service</button>
+                </div>
+                
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Service Name</th>
+                            <th>Description</th>
+                            <th>Icon</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Project Survey</td>
+                            <td>Comprehensive site analysis and evaluation</td>
+                            <td><i class="fas fa-search"></i></td>
+                            <td>
+                                <button class="action-btn edit-btn"><i class="fas fa-edit"></i></button>
+                                <button class="action-btn delete-btn"><i class="fas fa-trash"></i></button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Tendering & Estimation</td>
+                            <td>Accurate cost projections and competitive bidding</td>
+                            <td><i class="fas fa-file-invoice-dollar"></i></td>
+                            <td>
+                                <button class="action-btn edit-btn"><i class="fas fa-edit"></i></button>
+                                <button class="action-btn delete-btn"><i class="fas fa-trash"></i></button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Project Management</td>
+                            <td>Expert oversight from conception to completion</td>
+                            <td><i class="fas fa-tasks"></i></td>
+                            <td>
+                                <button class="action-btn edit-btn"><i class="fas fa-edit"></i></button>
+                                <button class="action-btn delete-btn"><i class="fas fa-trash"></i></button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Add Project Modal -->
+    <div class="modal" id="projectModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Add New Project</h3>
+                <button class="close-btn" id="closeProjectModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="projectForm">
+                    <div class="form-group">
+                        <label for="projectName">Project Name</label>
+                        <input type="text" id="projectName" name="projectName" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="projectLocation">Location</label>
+                        <input type="text" id="projectLocation" name="projectLocation" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="projectCategory">Category</label>
+                        <select id="projectCategory" name="projectCategory" required>
+                            <option value="">Select Category</option>
+                            <option value="Commercial">Commercial</option>
+                            <option value="Residential">Residential</option>
+                            <option value="Healthcare">Healthcare</option>
+                            <option value="Education">Education</option>
+                            <option value="Industrial">Industrial</option>
+                            <option value="Infrastructure">Infrastructure</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="projectStatus">Status</label>
+                        <select id="projectStatus" name="projectStatus" required>
+                            <option value="Ongoing">Ongoing</option>
+                            <option value="Completed">Completed</option>
+                            <option value="Upcoming">Upcoming</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="projectDescription">Description</label>
+                        <textarea id="projectDescription" name="projectDescription" required></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Project Image</label>
+                        <div class="file-upload" id="projectImageUpload">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <p>Click to upload project image</p>
+                            <input type="file" id="projectImage" name="projectImage" accept="image/*">
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="save-btn" id="saveProject">Save Project</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Add Service Modal -->
+    <div class="modal" id="serviceModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Add New Service</h3>
+                <button class="close-btn" id="closeServiceModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="serviceForm">
+                    <div class="form-group">
+                        <label for="serviceName">Service Name</label>
+                        <input type="text" id="serviceName" name="serviceName" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="serviceDescription">Description</label>
+                        <textarea id="serviceDescription" name="serviceDescription" required></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="serviceIcon">Icon (Font Awesome class)</label>
+                        <input type="text" id="serviceIcon" name="serviceIcon" placeholder="fas fa-tools" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Service Image</label>
+                        <div class="file-upload" id="serviceImageUpload">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <p>Click to upload service image</p>
+                            <input type="file" id="serviceImage" name="serviceImage" accept="image/*">
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="save-btn" id="saveService">Save Service</button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        
+        // Check if user is logged in
+       if (!localStorage.getItem('token')) {
+       window.location.href = '/';
+      }
+        
+        // Logout functionality
+       document.getElementById('logoutBtn').addEventListener('click', function() {
+       localStorage.removeItem('token');
+       window.location.href = '/';
+       });
+        
+        // Project Modal functionality
+        const projectModal = document.getElementById('projectModal');
+        const addProjectBtn = document.getElementById('addProjectBtn');
+        const closeProjectModal = document.getElementById('closeProjectModal');
+        const saveProjectBtn = document.getElementById('saveProject');
+        
+        addProjectBtn.addEventListener('click', function() {
+            projectModal.style.display = 'flex';
+        });
+        
+        closeProjectModal.addEventListener('click', function() {
+            projectModal.style.display = 'none';
+        });
+        
+        saveProjectBtn.addEventListener('click', function() {
+            // In a real implementation, this would save to a database
+            alert('Project saved successfully!');
+            projectModal.style.display = 'none';
+            document.getElementById('projectForm').reset();
+        });
+        
+        // Service Modal functionality
+        const serviceModal = document.getElementById('serviceModal');
+        const addServiceBtn = document.getElementById('addServiceBtn');
+        const closeServiceModal = document.getElementById('closeServiceModal');
+        const saveServiceBtn = document.getElementById('saveService');
+        
+        addServiceBtn.addEventListener('click', function() {
+            serviceModal.style.display = 'flex';
+        });
+        
+        closeServiceModal.addEventListener('click', function() {
+            serviceModal.style.display = 'none';
+        });
+        
+        saveServiceBtn.addEventListener('click', function() {
+            // In a real implementation, this would save to a database
+            alert('Service saved successfully!');
+            serviceModal.style.display = 'none';
+            document.getElementById('serviceForm').reset();
+        });
+        
+        // File upload preview
+        document.getElementById('projectImageUpload').addEventListener('click', function() {
+            document.getElementById('projectImage').click();
+        });
+        
+        document.getElementById('serviceImageUpload').addEventListener('click', function() {
+            document.getElementById('serviceImage').click();
+        });
+        
+        // Close modals when clicking outside
+        window.addEventListener('click', function(event) {
+            if (event.target === projectModal) {
+                projectModal.style.display = 'none';
+            }
+            if (event.target === serviceModal) {
+                serviceModal.style.display = 'none';
+            }
+        });
+        
+        // Edit and Delete buttons functionality (sample)
+        document.querySelectorAll('.edit-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                alert('Edit functionality would open the edit form here');
+            });
+        });
+        
+        document.querySelectorAll('.delete-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                if (confirm('Are you sure you want to delete this item?')) {
+                    // In a real implementation, this would delete from database
+                    alert('Item deleted successfully!');
+                }
+            });
+        });
+       
+    </script>
+</body>
+</html>
